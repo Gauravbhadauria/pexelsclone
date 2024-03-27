@@ -6,17 +6,37 @@ import {
   Image,
   TouchableOpacity,
   TextInput,
+  FlatList,
+  Keyboard,
 } from 'react-native';
 import React, {useState} from 'react';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {BLACK, THEME_COLOR, WHITE} from '../utils/Colors';
 import Modal from 'react-native-modal';
+import {SEARCH_PHOTOS, SEARCH_VIDEOS, searchData} from '../utils/Apis';
+import PhotoGrid from '../components/PhotoGrid';
+import VideoGrid from '../components/VideoGrid';
 const Search = () => {
   const navigation = useNavigation();
   const [type, setType] = useState(0);
   const [showTypeModal, setShowTypeModal] = useState(false);
   const [search, setSearch] = useState('');
+  const [photos, setPhotos] = useState([]);
+  const [videos, setVideos] = useState([]);
 
+  const doSearch = async () => {
+    if (type == 0) {
+      searchData(SEARCH_PHOTOS, search).then(res => {
+        console.log(res);
+        setPhotos(res.photos);
+      });
+    } else {
+      searchData(SEARCH_VIDEOS, search).then(res => {
+        console.log(res);
+        setVideos(res.videos);
+      });
+    }
+  };
   return (
     <View style={styles.container}>
       <StatusBar barStyle={'dark-content'} backgroundColor={THEME_COLOR} />
@@ -56,6 +76,8 @@ const Search = () => {
           <TouchableOpacity
             onPress={() => {
               setSearch('');
+              setPhotos([])
+              setVideos([])
             }}>
             <Image
               source={require('../images/cross.png')}
@@ -65,9 +87,31 @@ const Search = () => {
         )}
       </View>
       {search != '' && (
-        <TouchableOpacity style={styles.searchBtn}>
+        <TouchableOpacity
+          style={styles.searchBtn}
+          onPress={() => {
+            Keyboard.dismiss()
+            doSearch();
+          }}>
           <Text style={styles.searchTitle}>Search</Text>
         </TouchableOpacity>
+      )}
+      {type == 0 ? (
+        <FlatList
+          numColumns={2}
+          data={photos}
+          renderItem={({item, index}) => {
+            return <PhotoGrid item={item} />;
+          }}
+        />
+      ) : (
+        <FlatList
+          data={videos}
+          numColumns={2}
+          renderItem={({item,index}) => {
+            return <VideoGrid item={item}/>;
+          }}
+        />
       )}
       <Modal
         onBackdropPress={() => {
@@ -138,7 +182,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 40,
+    marginTop: 55,
     marginLeft: 15,
   },
   icon: {

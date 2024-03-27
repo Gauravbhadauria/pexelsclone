@@ -20,3 +20,21 @@ export const getData = async (endPoint, rest) => {
   const json = await res.json();
   return json;
 };
+
+export const searchData = async (endPoint, q) => {
+  var myHeaders = new Headers();
+  myHeaders.append('Authorization', KEY);
+
+  var requestOptions = {
+    method: 'GET',
+    headers: myHeaders,
+    redirect: 'follow',
+  };
+
+  const res = await fetch(
+    BASE_URL + endPoint + `?query=${q}&per_page=100`,
+    requestOptions,
+  );
+  const json = await res.json();
+  return json;
+};

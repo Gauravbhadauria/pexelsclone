@@ -11,7 +11,7 @@ const Home = () => {
   const [videos, setVideos] = useState([]);
   const navigation=useNavigation()
   useEffect(() => {
-   // getPhotos()
+    getPhotos()
     getVideos()
   }, []);
   const getPhotos = () => {
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
   },
   searchBox: {
     width: '90%',
-    height: 60,
+    height: 50,
     backgroundColor: WHITE,
     alignSelf: 'center',
     marginTop: 70,

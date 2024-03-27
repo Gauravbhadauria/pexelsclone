@@ -1,1 +1,1 @@
-export const KEY='xxxxxxxxxxxxxxx'
+export const KEY='XXXXXXXXXXXXXXXX'
